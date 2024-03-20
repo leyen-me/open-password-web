@@ -1,5 +1,5 @@
 <template>
-    <form class="p-12" @submit.prevent="handleSave">
+    <form class="p-12 pb-52" @submit.prevent="handleSave">
         <div class="space-y-12">
             <div class="border-b border-gray-900/10 pb-12">
                 <h2 class="text-base font-semibold leading-7 text-gray-900">{{ pwdForm.id ? '修改密码' : '新增密码' }}</h2>
@@ -41,10 +41,16 @@
                             </div>
                         </div>
                     </div>
+                    <div class="sm:col-span-4">
+                        <label for="comment" class="block text-sm font-medium leading-6 text-gray-900">备注</label>
+                        <div class="mt-2">
+                            <textarea v-model="pwdForm.remark" rows="4" name="comment" id="comment" :maxlength="1000"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-
         <div class="mt-6 flex items-center justify-end gap-x-6">
             <button type="button" class="text-sm font-semibold leading-6 text-gray-900"
                 @click="router.back()">返回</button>
@@ -81,6 +87,7 @@ const pwdForm = ref({
     platform: "",
     account: "",
     password: "",
+    remark: ""
 })
 
 
@@ -89,6 +96,7 @@ if (pwdForm.value.id) {
         pwdForm.value.platform = res.data.platform
         pwdForm.value.account = res.data.account
         pwdForm.value.password = res.data.password
+        pwdForm.value.remark = res.data.remark
     })
 }
 

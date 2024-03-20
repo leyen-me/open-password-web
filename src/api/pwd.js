@@ -18,3 +18,7 @@ export const usePwdSaveApi = (dataForm) => {
 export const usePwdDeleteApi = (pwdId) => {
   return service.delete("/pwd/", { data: [pwdId] });
 };
+
+export const usePwdSortApi = (ids) => {
+  return service.post("/pwd/sort", ids);
+};
