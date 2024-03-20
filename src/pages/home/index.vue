@@ -8,11 +8,17 @@
             <div class="ml-4 mt-4 flex-shrink-0">
                 <button type="button" @click="handleAddPassword"
                     class="relative inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">创建一个新的密码</button>
+
+
+                <button type="button" @click="handleDrag" :class="drag ? '!bg-red-500' : ''"
+                    class="ml-2 relative inline-flex items-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">{{
+                    drag ? '退出' : '排序' }}</button>
+
             </div>
         </div>
     </div>
     <ul role="list" class="px-8 py-12 pt-0 divide-y divide-gray-100">
-        <VueDraggable ref="el" v-model="pwdList" :onEnd="handleSort">
+        <VueDraggable :disabled="!drag" v-model="pwdList" :onEnd="handleSort">
             <li v-for="pwd in pwdList" :key="pwd.id"
                 class="relative flex justify-between gap-x-6 py-5 border-b border-gray-200"
                 @click.stop="router.push('/save/' + pwd.id)">
@@ -39,7 +45,8 @@
                             <time :datetime="pwd.create_time">{{ pwd.create_time }}</time>
                         </p>
                     </div>
-                    <ChevronRightIcon class="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />
+                    <ChevronRightIcon v-if="!drag" class="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />
+                    <Bars3Icon v-else class="h-5 w-5 flex-none text-gray-400" aria-hidden="true" />
                 </div>
             </li>
         </VueDraggable>
@@ -49,20 +56,24 @@
 <script setup>
 import { ref } from 'vue'
 
-import { ChevronRightIcon } from '@heroicons/vue/20/solid'
+import { Bars3Icon, ChevronRightIcon } from '@heroicons/vue/20/solid'
 import { usePwdListApi, usePwdSortApi } from '@/api/pwd'
 import { useRouter } from "vue-router";
 import { VueDraggable } from 'vue-draggable-plus'
 
 const router = useRouter()
 
+// 默认情况下不能拖拽
+const drag = ref(false)
 const pwdList = ref([])
 
 
 const handleAddPassword = () => {
     router.push("/save/0")
 }
-
+const handleDrag = () => {
+    drag.value = !drag.value
+}
 const handleSort = () => {
     usePwdSortApi(pwdList.value.map(pwd => pwd.id))
 }
